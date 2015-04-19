@@ -56,7 +56,7 @@ var uploadForm = new UploadForm('form', 'https://cross-domain.com/upload', {
 	}
 });
 
-function showParseError(errorMessage, originalText, xhr) {
+function showParseError(type, errorMessage, originalText, xhr) {
 	if (this.useIFrameFallback === false) {
 		log(xhr);
 	}
@@ -67,19 +67,19 @@ function showParseError(errorMessage, originalText, xhr) {
 	}
 }
 
-function showTimeout(xhr) {
+function showTimeout(type, xhr) {
 	if (this.useIFrameFallback === false) {
 		log(xhr);
 	}
 }
 
-function showAbort(xhr) {
+function showAbort(type, xhr) {
 	if (this.useIFrameFallback === false) {
 		log(xhr);
 	}
 }
 
-function showError(errorMessage, xhr) {
+function showError(type, errorMessage, xhr) {
 	if (this.useIFrameFallback === false) {
 		log(xhr);
 	}
