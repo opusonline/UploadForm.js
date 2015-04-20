@@ -1,14 +1,14 @@
+/*!
+ * UploadForm
+ * file upload via xhr2 (formdata) and iframe fallback
+ * supports timeout, abort, setData, setHeader, callbacks incl. beforeSend
+ * heads-up: iframe responses need content-type: text/plain
+ *
+ * JSON polyfill: http://bestiejs.github.io/json3/
+ *
+ * author: Stefan Benicke <stefan.benicke@gmail.com>
+ */
 (function (global, undefined) {
-    /*!
-     * UploadForm
-     * file upload via xhr2 (formdata) and iframe fallback
-     * supports timeout, abort, setData, setHeader, callbacks incl. beforeSend
-     * heads-up: iframe responses need content-type: text/plain
-     *
-     * JSON polyfill: http://bestiejs.github.io/json3/
-     *
-     * author: Stefan Benicke <stefan.benicke@gmail.com>
-     */
 
     var tryParseXML, XBrowserEvent;
 
@@ -157,10 +157,7 @@
         this.onprogress = undefined;
         this.onload = undefined;
         this.onerror = undefined;
-        this.listener.beforesend.length = 0;
-        this.listener.progress.length = 0;
-        this.listener.load.length = 0;
-        this.listener.error.length = 0;
+        this.off();
         return this;
     };
 
@@ -208,7 +205,6 @@
 
     function doAjaxUpload() {
         var fd, name, xhr;
-        applyEvent(this, 'beforesend');
         fd = new FormData(this.form);
         for (name in this.data) {
             if (this.data.hasOwnProperty(name)) {
@@ -247,8 +243,9 @@
         XBrowserEvent.add(xhr, 'abort', bind(onUploadAbort, this));
         XBrowserEvent.add(xhr, 'error', bind(onUploadFailed, this));
         XBrowserEvent.add(xhr, 'timeout', bind(onUploadTimeout, this));
-        xhr.send(fd);
         this.helpers.xhr = xhr;
+        applyEvent(this, 'beforesend');
+        xhr.send(fd);
     }
 
     function onUploadProgress(event) {
@@ -311,8 +308,8 @@
     }
 
     function doIframeUpload() {
-        applyEvent(this, 'beforesend');
         initIframeUploadForm.call(this);
+        applyEvent(this, 'beforesend');
         this.form.submit();
         if (this.options.timeout > 0) {
             clearTimer.call(this);
